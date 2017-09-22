@@ -375,22 +375,20 @@ page_decref(struct PageInfo* pp)
 pte_t *
 pgdir_walk(pde_t *pgdir, const void *va, int create)
 {
-	pde_t pde;
-	struct PageInfo *new_page;
+  struct PageInfo *new_page = NULL;
+  pde_t *pde = &pgdir[PDX(va)];
 
-	pde = pgdir[PDX(va)];
-	if (pde & PTE_P) {
-		return ((pte_t *) KADDR(PTE_ADDR(pde))) + PTX(va);
-	} else if (create) { // Not present, create one
-		/*** Codigo de la pregunta 5 aqui, cambiar true por la condicion ***/
-		if (true) { //condicion == NULL
-			return NULL;
-		}
-		new_page->pp_ref += 1;
-		pgdir[PDX(va)] = page2pa(new_page) | PTE_P | PTE_W | PTE_U;
-		return ((pte_t *) page2kva(new_page)) + PTX(va);
-	}
-	return NULL;
+  if (!(*pde & PTE_P) && !create)
+    return NULL;
+  else if (!(*pde & PTE_P) && create) {
+	//Condigo a agregar correspondiente a la pregunta 5, remplace la condicion por el true
+    if (true) // condition == NULL
+      return NULL;
+    new_page->pp_ref += 1;
+    *pde = (page2pa(new_page) | PTE_P | PTE_W | PTE_U);
+  }
+  pte_t *pte_base = KADDR(PTE_ADDR(*pde));
+  return &pte_base[PTX(va)];
 }
 
 //
