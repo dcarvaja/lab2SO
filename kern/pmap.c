@@ -137,7 +137,7 @@ mem_init(void)
 	i386_detect_memory();
 
 	// Remove this line when you're ready to test this function.
-	// panic("mem_init: This function is not finished\n");
+	panic("mem_init: This function is not finished\n");
 
 	//////////////////////////////////////////////////////////////////////
 	// create initial page directory.
@@ -159,9 +159,9 @@ mem_init(void)
 	// each physical page, there is a corresponding struct PageInfo in this
 	// array.  'npages' is the number of physical pages in memory.  Use memset
 	// to initialize all fields of each struct PageInfo to 0.
+
+	/**** Codigo de la pregunta 1 *****/
 	pages_size = sizeof(struct PageInfo) * npages;  // 256K
-	pages = (struct PageInfo *) boot_alloc(pages_size);
-	memset(pages, 0, pages_size);
 
 	//////////////////////////////////////////////////////////////////////
 	// Now that we've allocated the initial kernel data structures, we set
@@ -280,9 +280,10 @@ page_init(void)
 			continue;
 		}
 
-		pages[i].pp_ref = 0;
-		pages[i].pp_link = page_free_list;
-		page_free_list = &pages[i];
+		/**** Codigo pregunta 4 ****/
+		// Que valor debe tener pp_ref?
+		// A donde debiese apuntar pp_link?
+		// Deberia usar page_free_list aqui? 				Si
 	}
 }
 
@@ -381,7 +382,8 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 	if (pde & PTE_P) {
 		return ((pte_t *) KADDR(PTE_ADDR(pde))) + PTX(va);
 	} else if (create) { // Not present, create one
-		if ((new_page = page_alloc(ALLOC_ZERO)) == NULL) {
+		/*** Codigo de la pregunta 5 aqui, cambiar true por la condicion ***/
+		if (true) { //condicion == NULL
 			return NULL;
 		}
 		new_page->pp_ref += 1;
