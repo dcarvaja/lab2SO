@@ -381,8 +381,8 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
   if (!(*pde & PTE_P) && !create)
     return NULL;
   else if (!(*pde & PTE_P) && create) {
-	//Condigo a agregar correspondiente a la pregunta 5, remplace la condicion por el true
-    if (true) // condition == NULL
+	/***Codigo para la pregunta 5, reemplace el true por la condicion***/
+    if (true) // condicion == NULL
       return NULL;
     new_page->pp_ref += 1;
     *pde = (page2pa(new_page) | PTE_P | PTE_W | PTE_U);
