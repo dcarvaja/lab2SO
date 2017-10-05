@@ -256,10 +256,6 @@ page_init(void)
 	//     is free.
 	//  3) Then comes the IO hole [IOPHYSMEM, EXTPHYSMEM), which must
 	//     never be allocated.
-	//  4) Then extended memory [EXTPHYSMEM, ...).
-	//     Some of it is in use, some is free. Where is the kernel
-	//     in physical memory?  Which pages are already in use for
-	//     page tables and other data structures?
 
 	size_t i;
 	physaddr_t base, nextfree;
@@ -280,7 +276,7 @@ page_init(void)
 			continue;
 		}
 
-		/**** Codigo pregunta 4 ****/
+		/**** Codigo pregunta 2 ****/
 		// Que valor debe tener pp_ref?
 		// A donde debiese apuntar pp_link?
 		// Deberia usar page_free_list aqui? 				Si
@@ -381,8 +377,8 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
   if (!(*pde & PTE_P) && !create)
     return NULL;
   else if (!(*pde & PTE_P) && create) {
-	/***Codigo para la pregunta 5, reemplace el true por la condicion***/
-    if (true) // condicion == NULL
+	/***Codigo para la pregunta 4, reemplace el true por la condicion***/
+    if (true) // (asignacion) == NULL
       return NULL;
     new_page->pp_ref += 1;
     *pde = (page2pa(new_page) | PTE_P | PTE_W | PTE_U);
