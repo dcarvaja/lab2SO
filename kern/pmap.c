@@ -160,7 +160,7 @@ mem_init(void)
 	// array.  'npages' is the number of physical pages in memory.  Use memset
 	// to initialize all fields of each struct PageInfo to 0.
 
-	/**** Codigo de la pregunta 1 *****/
+	/*** Your code here ***/
 	pages_size = sizeof(struct PageInfo) * npages;  // 256K
 
 	//////////////////////////////////////////////////////////////////////
@@ -247,8 +247,6 @@ mem_init(void)
 void
 page_init(void)
 {
-	// The example code here marks all physical pages as free.
-	// However this is not truly the case.  What memory is free?
 	//  1) Mark physical page 0 as in use.
 	//     This way we preserve the real-mode IDT and BIOS structures
 	//     in case we ever need them.  (Currently we don't, but...)
@@ -256,30 +254,16 @@ page_init(void)
 	//     is free.
 	//  3) Then comes the IO hole [IOPHYSMEM, EXTPHYSMEM), which must
 	//     never be allocated.
+	//  4) Then extended memory [EXTPHYSMEM, nextfree).
+	//
 
 	size_t i;
 	physaddr_t base, nextfree;
-
 	page_free_list = NULL;
 	nextfree = (physaddr_t) PADDR(boot_alloc(0));
 
 	for (i = 0; i < npages; i++) {
-		base = i * PGSIZE;
-
-		// Physical page 0 is in use.
-		if (i == 0) {
-			continue;
-		}
-
-		// [IOPHYSMEM, nextfree) is in use.
-		if (base >= IOPHYSMEM && base < nextfree) {
-			continue;
-		}
-
-		/**** Codigo pregunta 2 ****/
-		// Que valor debe tener pp_ref?
-		// A donde debiese apuntar pp_link?
-		// Deberia usar page_free_list aqui? 				Si
+		//Your code here
 	}
 }
 
@@ -294,16 +278,13 @@ page_init(void)
 //
 // Returns NULL if out of free memory.
 //
-// Hint: use page2kva and memset
 struct PageInfo *
 page_alloc(int alloc_flags)
 {
 	struct PageInfo *free, *next;
 
 	// Out of free memory.
-	if (page_free_list == NULL) {
-		return NULL;
-	}
+	// Your code here
 
 	free = page_free_list;
 	next = page_free_list->pp_link;
@@ -324,15 +305,7 @@ page_alloc(int alloc_flags)
 void
 page_free(struct PageInfo *pp)
 {
-	if (pp->pp_ref != 0) {
-		panic("pp->pp_ref is nonzero!");
-	}
-	if (pp->pp_link != NULL) {
-		panic("pp->pp_link is not NULL!");
-	}
-
-	pp->pp_link = page_free_list;
-	page_free_list = pp;
+	panic("Esto es un panic, se debe borrar al hacer la funcion.");
 }
 
 //
@@ -377,7 +350,7 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
   if (!(*pde & PTE_P) && !create)
     return NULL;
   else if (!(*pde & PTE_P) && create) {
-	/***Codigo para la pregunta 4, reemplace el true por la condicion***/
+	/*** Your code here, reemplace el true por la condicion***/
     if (true) // (asignacion) == NULL
       return NULL;
     new_page->pp_ref += 1;
