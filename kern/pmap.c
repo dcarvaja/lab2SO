@@ -247,14 +247,17 @@ mem_init(void)
 void
 page_init(void)
 {
+	// The example code here marks all physical pages as free.
+	// However this is not truly the case. What memory is free?
 	//  1) Mark physical page 0 as in use.
 	//     This way we preserve the real-mode IDT and BIOS structures
 	//     in case we ever need them.  (Currently we don't, but...)
 	//  2) The rest of base memory, [PGSIZE, npages_basemem * PGSIZE)
 	//     is free.
 	//  3) Then comes the IO hole [IOPHYSMEM, EXTPHYSMEM), which must
-	//     never be allocated.
-	//  4) Then extended memory [EXTPHYSMEM, nextfree).
+	//     never be allocated, meaning that should be marked as in use. 
+	//  4) Then the extended memory [EXTPHYSMEM, nextfree) that also
+	//     should be marked as in use.
 	//
 
 	size_t i;
@@ -263,7 +266,10 @@ page_init(void)
 	nextfree = (physaddr_t) PADDR(boot_alloc(0));
 
 	for (i = 0; i < npages; i++) {
-		//Your code here
+		base = i * PGSIZE;
+		
+		// Change this line
+		pages[i].pp_ref = 0;
 	}
 }
 
@@ -350,9 +356,11 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
   if (!(*pde & PTE_P) && !create)
     return NULL;
   else if (!(*pde & PTE_P) && create) {
-	/*** Your code here, reemplace el true por la condicion***/
+    // Your code here, reemplace el true por la condicion
     if (true) // (asignacion) == NULL
       return NULL;
+    
+    // Where is this variable?
     new_page->pp_ref += 1;
     *pde = (page2pa(new_page) | PTE_P | PTE_W | PTE_U);
   }
